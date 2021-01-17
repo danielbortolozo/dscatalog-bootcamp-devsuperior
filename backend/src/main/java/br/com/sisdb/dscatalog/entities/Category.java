@@ -20,12 +20,12 @@ public class Category implements Serializable{
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;	
 	
-	private String description;
+	private String name;
 
 	
-	public Category(Long id, String description) {		
+	public Category(Long id, String name) {		
 		this.id = id;
-		this.description = description;
+		this.name = name;
 	}
 
 	public Category() {
@@ -41,12 +41,12 @@ public class Category implements Serializable{
 		this.id = id;
 	}
 
-	public String getDescription() {
-		return description;
+	public String getName() {
+		return name;
 	}
 
-	public void setDescription(String description) {
-		this.description = description;
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	@Override
