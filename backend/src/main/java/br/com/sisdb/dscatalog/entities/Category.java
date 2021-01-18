@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+import br.com.sisdb.dscatalog.dto.CategoryDTO;
+
 
 @Entity
 @Table(name = "category")
@@ -30,6 +32,11 @@ public class Category implements Serializable{
 
 	public Category() {
 		
+	}
+
+	public Category(CategoryDTO dto) {
+		
+		this.name = dto.getName();
 	}
 
 	//Gets e Sets
