@@ -12,8 +12,11 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import br.com.sisdb.dscatalog.dto.CategoryDTO;
 import br.com.sisdb.dscatalog.dto.ProductDTO;
+import br.com.sisdb.dscatalog.entities.Category;
 import br.com.sisdb.dscatalog.entities.Product;
+import br.com.sisdb.dscatalog.repositories.CategoryRepository;
 import br.com.sisdb.dscatalog.repositories.ProductRepository;
 import br.com.sisdb.dscatalog.services.exceptions.DataBaseException;
 import br.com.sisdb.dscatalog.services.exceptions.ResourceNotFoundException;
@@ -23,6 +26,8 @@ public class ProductService {
 	
 	@Autowired
 	private ProductRepository repository;
+	@Autowired
+	private CategoryRepository categoryRepository;
 	
 	@Transactional(readOnly = true)
 	public Page<ProductDTO> findAllPaged(PageRequest pageRequest) {
@@ -40,6 +45,7 @@ public class ProductService {
 	@Transactional
 	public ProductDTO inster(ProductDTO dto) {		
 		Product entity = new Product();
+		copyDtoToEntity(dto, entity);
 		entity = repository.save(entity);
 		return new ProductDTO(entity);
 	}
@@ -49,7 +55,7 @@ public class ProductService {
 		try {
 		  Product entity = repository.getOne(id);
 		
-	//	  entity.setName(dto.getName());
+	      copyDtoToEntity(dto, entity);
 		  entity = repository.save(entity);
 		  return new ProductDTO(entity);
 		}
@@ -70,4 +76,19 @@ public class ProductService {
 		}
 	}
 
+    private void copyDtoToEntity(ProductDTO dto, Product entity) {	
+		entity.setName(dto.getName());
+		entity.setDescription(dto.getDescription());
+		entity.setPrice(dto.getPrice());
+		entity.setImgUrl(dto.getImgUrl());
+		entity.setDate(dto.getDate());
+		
+		entity.getCategories().clear();
+		for (CategoryDTO catDto : dto.getCategories()) {
+			Category category = categoryRepository.getOne(catDto.getId());
+			entity.getCategories().add(category);
+		}
+		
+		
+	}
 }
