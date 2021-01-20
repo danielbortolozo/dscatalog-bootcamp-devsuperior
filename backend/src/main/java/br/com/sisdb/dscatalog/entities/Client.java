@@ -8,46 +8,42 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.PrePersist;
-import javax.persistence.PreUpdate;
 import javax.persistence.Table;
 
-import br.com.sisdb.dscatalog.dto.CategoryDTO;
-
+import br.com.sisdb.dscatalog.dto.ClientDTO;
 
 @Entity
-@Table(name = "category")
-public class Category implements Serializable{
-	
+@Table(name = "client")
+public class Client implements Serializable{	
 	private static final long serialVersionUID = 1L;
-
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	private Long id;	
+	private Long id;
+	private String name;	
+	private Double income;
+	@Column(columnDefinition = "TIMESTAMP WITHOUT TIME ZONE")
+	private Instant birthDate;
+	private Integer children;
 	
-	private String name;
-	
-	@Column(columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
-	private Instant createAt;
+	public Client() {	
+	}
 
-	@Column(columnDefinition="TIMESTAMP WITHOUT TIME ZONE")
-	private Instant updateAt;
-	
-	public Category(Long id, String name) {		
+	public Client(Long id, String name, Double income, Instant birthDate, Integer children) {
 		this.id = id;
 		this.name = name;
-	}
-
-	public Category() {
-		
-	}
-
-	public Category(CategoryDTO dto) {
-		
+		this.income = income;
+		this.birthDate = birthDate;
+		this.children = children;
+	}	
+	
+	public Client(ClientDTO dto) {
+		this.id = dto.getId();
 		this.name = dto.getName();
+		this.income = dto.getIncome();
+		this.birthDate = dto.getBirthDate();
+		this.children = dto.getChildren();
 	}
-
-	//Gets e Sets
+	
 	public Long getId() {
 		return id;
 	}
@@ -63,28 +59,31 @@ public class Category implements Serializable{
 	public void setName(String name) {
 		this.name = name;
 	}
-	
-	public Instant getCreateAt() {
-		return createAt;
+
+	public Double getIncome() {
+		return income;
 	}
 
-	public Instant getUpdateAt() {
-		return updateAt;
+	public void setIncome(Double income) {
+		this.income = income;
 	}
 
-	/**
-	 * Auditoria de create new category.
-	 * */
-	@PrePersist
-	public void prePersist() {
-		createAt = Instant.now();
+	public Instant getBirthDate() {
+		return birthDate;
 	}
-	
-	@PreUpdate
-	public void preUpdate() {
-		updateAt = Instant.now();
+
+	public void setBirthDate(Instant birthDate) {
+		this.birthDate = birthDate;
 	}
-	
+
+	public Integer getChildren() {
+		return children;
+	}
+
+	public void setChildren(Integer children) {
+		this.children = children;
+	}
+
 	@Override
 	public int hashCode() {
 		final int prime = 31;
@@ -101,7 +100,7 @@ public class Category implements Serializable{
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		Category other = (Category) obj;
+		Client other = (Client) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -109,5 +108,5 @@ public class Category implements Serializable{
 			return false;
 		return true;
 	}
-	
+			
 }

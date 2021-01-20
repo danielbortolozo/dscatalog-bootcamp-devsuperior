@@ -6,16 +6,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.Column;
-
 import br.com.sisdb.dscatalog.entities.Category;
 import br.com.sisdb.dscatalog.entities.Product;
 
 public class ProductDTO implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
-	
-	
+		
 	private Long id;
 	private String name;
 	private String description;
@@ -38,6 +35,7 @@ public class ProductDTO implements Serializable{
 		this.imgUrl = imgUrl;
 		this.date = date;
 	}
+	
 	public ProductDTO(Product entity) {		
 		this.id = entity.getId();
 		this.name = entity.getName();
