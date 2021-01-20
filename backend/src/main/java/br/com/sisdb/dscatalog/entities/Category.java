@@ -19,7 +19,6 @@ import br.com.sisdb.dscatalog.dto.CategoryDTO;
 @Table(name = "category")
 public class Category implements Serializable{
 	
-	
 	private static final long serialVersionUID = 1L;
 
 	@Id
@@ -66,10 +65,6 @@ public class Category implements Serializable{
 		this.name = name;
 	}
 	
-	
-	
-	
-
 	public Instant getCreateAt() {
 		return createAt;
 	}
