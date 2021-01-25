@@ -1,8 +1,10 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ReactComponent as ArrowIcon } from '../../../../core/assets/images/arrow.svg';
 import { ReactComponent as ImgProduct } from '../../../../core/assets/images/img-product.svg';
 import ProductPrice from '../../../../core/components/productprice';
+import { Product } from '../../../../core/types/Product';
+import { makeRequest } from '../../../../core/utils/request';
 
 import './styles.scss';
 
@@ -12,6 +14,13 @@ type ParamsType = {
 
 const ProductDetail = () => {
     const { productId } = useParams<ParamsType>();
+    const [product, setProduct] = useState<Product>();
+
+    useEffect(() => {
+        makeRequest({ url: `/products/${productId}` })
+            .then(response => setProduct(response.data))
+    }, [productId]);
+
     return (
         <div className="product-details-container">
             <div className="card-base border-radius-20 product-details">
@@ -24,9 +33,11 @@ const ProductDetail = () => {
                         <div className="product-details-card text-center">
                             <ImgProduct className="product-details-img" />
                         </div>
-                        <h1 className="product-details-name">Computador Desktop processador i7   </h1>
-                       
-                        <ProductPrice price="2.789,90" />
+                        <h1 className="product-details-name">
+                            {product?.name}
+                        </h1>
+
+                        {product?.price && <ProductPrice price={product?.price} />}
                     </div>
 
                     <div className="col-6 product-details-card">
@@ -34,15 +45,8 @@ const ProductDetail = () => {
                             Descrição do produto
                     </h1>
                         <p className="product-description-text">
-                            Seja um mestre em multitarefas com a capacidade para exibir
-                            quatro aplicativos simultâneos na tela.
-                            A tela está ficando abarrotada?
-                            Crie áreas de trabalho virtuais para obter mais
-                            espaço e trabalhar com os itens que você deseja.
-                            Além disso, todas as notificações e principais configurações são
-                            reunidas em uma única tela de fácil acesso.
-
-                    </p>
+                            {product?.description}
+                        </p>
 
                     </div>
 
