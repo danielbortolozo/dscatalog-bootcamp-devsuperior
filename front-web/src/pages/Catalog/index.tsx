@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import './styles.scss';
 import ProductCard from './components/ProductCard';
-import ProductCardLoader from './components/PoductCatalogLoader';
-import { makeRequest } from '../../core/utils/request';
-import { ProductsResponse } from '../../core/types/Product';
+import ProductCardLoader from './components/Loaders/ProductCardLoader';
+import { makeRequest } from 'core/utils/request';
+import { ProductsResponse } from 'core/types/Product';
 import { Link } from 'react-router-dom';
 
 
