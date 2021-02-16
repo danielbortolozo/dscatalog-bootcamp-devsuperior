@@ -10,7 +10,7 @@ const Products = () => {
        <div>
            
            <Switch>
-           <BrowserRouter>
+       
            <Route path="/admin/products" exact>
               <List />              
            </Route>
@@ -21,7 +21,7 @@ const Products = () => {
               <h1>editar</h1>
            </Route>     
             
-         </BrowserRouter>   
+       
          </Switch>
 
        </div>

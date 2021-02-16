@@ -11,10 +11,10 @@ const Admin = () => (
        
        <div className="admin-content">
          <Switch>
-           <Route path="/admin/products" exact>
+           <Route path="/admin/products">
               <Products />
            </Route>
-           <Route path="/admin/categories" exact>
+           <Route path="/admin/categories" exact >
               <h1>Categories</h1>
            </Route>
            <Route path="/admin/users" exact>
