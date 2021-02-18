@@ -5,6 +5,7 @@ import br.com.sisdb.dscatalog.entities.Product;
 import br.com.sisdb.dscatalog.entities.Role;
 import br.com.sisdb.dscatalog.entities.User;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -15,6 +16,7 @@ public class UserDTO implements Serializable {
     private static final long serialVersionUID = 1L;
 
     private Long id;
+    @NotBlank(message = "Nome requerido.")
     private String firstName;
     private String lastName;
     private String email;

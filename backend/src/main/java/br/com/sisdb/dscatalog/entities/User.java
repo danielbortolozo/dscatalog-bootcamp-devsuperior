@@ -3,6 +3,7 @@ package br.com.sisdb.dscatalog.entities;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
@@ -16,6 +17,7 @@ public class User implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     private String firstName;
     private String lastName;
     @Column(unique = true)
@@ -83,7 +85,6 @@ public class User implements Serializable {
     public Set<Role> getRoles() {
         return roles;
     }
-
 
     @Override
     public boolean equals(Object o) {
