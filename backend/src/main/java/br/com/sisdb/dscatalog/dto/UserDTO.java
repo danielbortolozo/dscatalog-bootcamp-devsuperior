@@ -1,44 +1,43 @@
-package br.com.sisdb.dscatalog.entities;
+package br.com.sisdb.dscatalog.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import br.com.sisdb.dscatalog.entities.Category;
+import br.com.sisdb.dscatalog.entities.Product;
+import br.com.sisdb.dscatalog.entities.Role;
+import br.com.sisdb.dscatalog.entities.User;
 
-import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 
-@Entity
-@Table(name = "user")
-public class User implements Serializable {
-    private static final long serialVersionUID =1L;
+public class UserDTO implements Serializable {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private static final long serialVersionUID = 1L;
+
     private Long id;
     private String firstName;
     private String lastName;
-    @Column(unique = true)
     private String email;
-    private String password;
 
-    @JsonIgnore
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(name = "user_role",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id"))
-    private Set<Role> roles = new HashSet<>();
+    Set<RoleDTO> roles = new HashSet<>();
 
-    public User() {
+    public UserDTO() {
     }
 
-    public User(Long id, String firstName, String lastName, String email, String password) {
+    public UserDTO(Long id, String firstName, String lastName, String email) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
-        this.password = password;
     }
+    public UserDTO(User entity) {
+        id = entity.getId();
+        firstName = entity.getFirstName();
+        lastName = entity.getLastName();
+        email = entity.getEmail();
+        entity.getRoles().forEach(rol -> this.roles.add(new RoleDTO(rol)));
+    }
+
 
     public Long getId() {
         return id;
@@ -72,25 +71,16 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public Set<Role> getRoles() {
+    public Set<RoleDTO> getRoles() {
         return roles;
     }
-
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-        User user = (User) o;
-        return id.equals(user.id);
+        UserDTO userDTO = (UserDTO) o;
+        return Objects.equals(id, userDTO.id);
     }
 
     @Override
