@@ -5,6 +5,7 @@ import br.com.sisdb.dscatalog.entities.Product;
 import br.com.sisdb.dscatalog.entities.Role;
 import br.com.sisdb.dscatalog.entities.User;
 
+import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.HashSet;
@@ -19,6 +20,7 @@ public class UserDTO implements Serializable {
     @NotBlank(message = "Nome requerido.")
     private String firstName;
     private String lastName;
+    @Email(message = "Favor entrar com um e-mail válido.")
     private String email;
 
     Set<RoleDTO> roles = new HashSet<>();
