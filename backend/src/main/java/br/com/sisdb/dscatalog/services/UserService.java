@@ -1,9 +1,6 @@
 package br.com.sisdb.dscatalog.services;
 
-import br.com.sisdb.dscatalog.dto.CategoryDTO;
-import br.com.sisdb.dscatalog.dto.RoleDTO;
-import br.com.sisdb.dscatalog.dto.UserDTO;
-import br.com.sisdb.dscatalog.dto.UserInsertDTO;
+import br.com.sisdb.dscatalog.dto.*;
 import br.com.sisdb.dscatalog.entities.Category;
 import br.com.sisdb.dscatalog.entities.Role;
 import br.com.sisdb.dscatalog.entities.User;
@@ -57,7 +54,7 @@ public class UserService {
 	}
 
 	@Transactional
-	public UserDTO update(Long id, UserDTO dto) {
+	public UserDTO update(Long id, UserUpdateDTO dto) {
 		try {
 		  User entity = repository.getOne(id);
 		
