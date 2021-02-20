@@ -1,12 +1,19 @@
 package br.com.sisdb.dscatalog.services;
 
+import java.io.IOException;
+import java.net.URI;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
 import javax.persistence.EntityNotFoundException;
 
+import br.com.sisdb.dscatalog.dto.UriDTO;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
@@ -22,10 +29,19 @@ import br.com.sisdb.dscatalog.repositories.CategoryRepository;
 import br.com.sisdb.dscatalog.repositories.ProductRepository;
 import br.com.sisdb.dscatalog.services.exceptions.DataBaseException;
 import br.com.sisdb.dscatalog.services.exceptions.ResourceNotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 public class ProductService {
 	
+   @Value("${image.root}")
+	private String raiz;
+
+   @Value("${directory-img}")
+	private String directoryImg;
+
+   private String uriImagem = "";
+    
 	@Autowired
 	private ProductRepository repository;
 	@Autowired
@@ -91,7 +107,31 @@ public class ProductService {
 			Category category = categoryRepository.getOne(catDto.getId());
 			entity.getCategories().add(category);
 		}
-		
-		
 	}
+
+
+	public String salvarImageProduct(MultipartFile img) {
+       this.salvarImage(directoryImg, img);
+       return this.uriImagem;
+	}
+
+	private void salvarImage(String diretorio, MultipartFile image) {
+		Path directoryPath = Paths.get(this.raiz, directoryImg);
+		Path arquivoPath = directoryPath.resolve(image.getOriginalFilename());
+		try {
+			Files.createDirectories(directoryPath);
+			image.transferTo(arquivoPath.toFile());
+			this.uriImagem = arquivoPath.toUri().getPath();
+		}catch (IOException e) {
+			throw new RuntimeException("Problemas ao salvar image.");
+		}
+
+	}
+
+
+
+
+
+
+
 }

@@ -2,6 +2,7 @@ package br.com.sisdb.dscatalog.resources;
 
 import java.net.URI;
 
+import br.com.sisdb.dscatalog.dto.UriDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import br.com.sisdb.dscatalog.dto.ProductDTO;
@@ -56,6 +58,14 @@ public class ProductResource {
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				  .buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
+	}
+	@PostMapping(value = "/image")
+	public ResponseEntity<UriDTO> uploadImage(@RequestParam(value = "file") MultipartFile file) {
+
+		String uriImg = service.salvarImageProduct(file);
+        UriDTO uriDto = new UriDTO();
+        uriDto.setUri(uriImg);
+		return ResponseEntity.ok(uriDto);
 	}
 	
 	
