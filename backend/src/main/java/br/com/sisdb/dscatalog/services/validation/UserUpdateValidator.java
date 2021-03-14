@@ -1,10 +1,9 @@
 package br.com.sisdb.dscatalog.services.validation;
 
-import br.com.sisdb.dscatalog.dto.UserInsertDTO;
 import br.com.sisdb.dscatalog.dto.UserUpdateDTO;
 import br.com.sisdb.dscatalog.entities.User;
 import br.com.sisdb.dscatalog.repositories.UserRepository;
-import br.com.sisdb.dscatalog.resources.execptions.FieldMessage;
+import br.com.sisdb.dscatalog.resources.exceptions.FieldMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.HandlerMapping;
 

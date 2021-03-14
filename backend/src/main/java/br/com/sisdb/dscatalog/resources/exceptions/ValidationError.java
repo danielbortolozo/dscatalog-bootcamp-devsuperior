@@ -1,4 +1,4 @@
-package br.com.sisdb.dscatalog.resources.execptions;
+package br.com.sisdb.dscatalog.resources.exceptions;
 
 import java.util.ArrayList;
 import java.util.List;
