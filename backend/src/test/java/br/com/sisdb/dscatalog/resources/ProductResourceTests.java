@@ -80,6 +80,7 @@ public class ProductResourceTests {
        Mockito.when(service.findAllPaged(any(), anyString(), any())).thenReturn(page);
 
        Mockito.when(service.inster(any())).thenReturn(existingProductDTO);
+
        Mockito.when(service.update(eq(existingId), any())).thenReturn(existingProductDTO);
        Mockito.when(service.update(eq(nonExistingId), any())).thenThrow(ResourceNotFoundException.class);
 
@@ -89,8 +90,62 @@ public class ProductResourceTests {
     }
 
     @Test
-    public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
+    public void deleteShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
 
+        String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+        ResultActions resultActions =
+                mockMvc.perform(delete("/products/{id}", nonExistingId)
+                        .header("Authorization", "Bearer "+accessToken)
+                        .accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void deleteShouldReturnNoContentWhenIdExists() throws Exception {
+        String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+
+        ResultActions resultActions =
+                mockMvc.perform(delete("/products/{id}", existingId)
+                        .header("Authorization", "Bearer "+accessToken)
+                        .accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isNoContent());
+    }
+
+
+    @Test
+    public void insertShouldReturnProductDTOWhenCreateNewProduct() throws Exception {
+        String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+        String jsonBody = objectMapper.writeValueAsString(newProductDTO);
+
+        ResultActions resultActions =
+                mockMvc.perform(post("/products")
+                        .header("Authorization", "Bearer "+accessToken)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isCreated());
+        resultActions.andExpect(jsonPath("$.id").exists());
+    }
+
+    @Test
+    public void insertShouldReturnUnprocessableWhenCreateNewProduct() throws Exception {
+        String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
+        ProductDTO productDTO = newProductDTO;
+        productDTO.setPrice(0.0);
+        String jsonBody = objectMapper.writeValueAsString(productDTO);
+
+        ResultActions resultActions =
+                mockMvc.perform(post("/products")
+                        .header("Authorization", "Bearer "+accessToken)
+                        .content(jsonBody)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .accept(MediaType.APPLICATION_JSON));
+        resultActions.andExpect(status().isUnprocessableEntity());
+    }
+
+
+    @Test
+    public void updateShouldReturnProductDTOWhenIdExists() throws Exception {
         String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
         String jsonBody = objectMapper.writeValueAsString(newProductDTO);
         String expectedName = newProductDTO.getName();
@@ -111,7 +166,6 @@ public class ProductResourceTests {
 
     @Test
     public void updateShouldReturnNotFoundWhenIdDoesNotExists() throws Exception {
-
         String accessToken = obtainAccessToken(operatorUsername, operatorPassword);
         String jsonBody = objectMapper.writeValueAsString(newProductDTO);
         ResultActions resultActions =
