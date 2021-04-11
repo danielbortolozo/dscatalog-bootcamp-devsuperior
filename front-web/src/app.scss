@@ -4,7 +4,12 @@
   font-family: 'Open Sans', sans-serif;
 }
 
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   margin-bottom: 0;
   font-weight: 700;
 }
@@ -21,13 +26,33 @@ a {
     color: unset;
   }
 }
+
 .border-radius-10 {
   border-radius: 10px;
 }
+
 .border-radius-20 {
   border-radius: 10px;
 }
+
 .card-base {
   background: #fff;
   box-shadow: 0px 4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.input-base {
+  border: 1px solid #E1E1E1;
+  box-sizing: border-box;
+  border-radius: 10px;
+  font-size: 18px;
+  line-height: 25px;
+  letter-spacing: -0.015em;
+  height: 50px;
+  &::placeholder {
+    color: #9E9E9E;
+  }
+}
+
+.margin-botton-30 {
+  margin-bottom: 30px;
 }
