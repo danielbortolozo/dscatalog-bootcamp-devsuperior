@@ -1,6 +1,7 @@
 import axios, { Method } from 'axios';
-import {CLIENT_ID, CLIENT_SECRET} from '../utils/auth';
+import {CLIENT_ID, CLIENT_SECRET, getSessionData} from '../utils/auth';
 import qs from 'qs';
+import history from './history';
 
 
 type RequestParams = {
@@ -16,6 +17,17 @@ type LoginData = {
     password: string;
 }
 const BASE_URL ='http://localhost:8080';
+
+axios.interceptors.response.use(function (response) {
+    return response;
+}, function(error) {
+    if (error.response.status === 401) {
+        console.log('redirecionar o usuario para o login');
+        history.push('/admin/auth/login')
+    }
+    return Promise.reject(error);
+});
+
 
  export const makeRequest = ({method = 'GET', url, data, params, headers }:RequestParams) => {
     
@@ -37,9 +49,19 @@ export const makeLogin = (loginData: LoginData) => {
         Authorization: `Basic ${window.btoa(token)}`,
         'Content-Type': 'application/x-www-form-urlencoded'
     }
-    console.log('montar o payload...')
-
+    
     const payload = qs.stringify({...loginData, grant_type: 'password'})
 
     return makeRequest({ url: '/oauth/token', data: payload, method:'POST', headers })
+}
+
+export const makePrivateRequest = ({method = 'GET', url, data, params }: RequestParams) => {
+  const sessionData = getSessionData();
+
+    const headers = {
+        'Authorization' : `Bearer ${sessionData.access_token}`
+    }
+
+    return makeRequest({ method, url, data, params, headers });
+    
 }
