@@ -1,5 +1,5 @@
 import React from 'react';
-import { Router, Switch, Route, Redirect } from 'react-router-dom';
+
 import Admin from './pages/Admin';
 import Catalog from './pages/Catalog';
 import Home from './pages/Home';
@@ -7,6 +7,8 @@ import Navbar from './core/components/navbar';
 import ProductDetail from './pages/Catalog/components/ProductDetail'
 import Auth from './pages/Auth'
 import history from './core/utils/history';
+import { Redirect, Route, Router, Switch } from 'react-router-dom';
+
 const Routes = () => (
   <Router history={ history }>
     <Navbar/>
