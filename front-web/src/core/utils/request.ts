@@ -1,7 +1,6 @@
 import axios, { Method } from 'axios';
-import {CLIENT_ID, CLIENT_SECRET, getSessionData} from '../utils/auth';
+import {CLIENT_ID, CLIENT_SECRET, getSessionData, logout} from '../utils/auth';
 import qs from 'qs';
-import history from './history';
 
 
 type RequestParams = {
@@ -22,8 +21,7 @@ axios.interceptors.response.use(function (response) {
     return response;
 }, function(error) {
     if (error.response.status === 401) {
-        console.log('redirecionar o usuario para o login');
-        history.push('/admin/auth/login')
+       logout();
     }
     return Promise.reject(error);
 });

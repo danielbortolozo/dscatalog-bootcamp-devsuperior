@@ -18,13 +18,13 @@ const Auth = () => (
 
        <div className="auth-content">
        <Switch>
-           <Route path="/admin/auth/login">
+           <Route path="/auth/login">
                <Login />             
            </Route>
-           <Route path="/admin/auth/register" exact >
+           <Route path="/auth/register" exact >
               <h1>Register</h1>
            </Route>
-           <Route path="/admin/auth/recover" exact>
+           <Route path="/auth/recover" exact>
               <h1>Recuperacao</h1>
            </Route>     
             
