@@ -31,10 +31,6 @@ const Auth = () => (
          </Switch>       
 
         </div>
-       
-
-
-
     </div>
 )
 export default Auth;
