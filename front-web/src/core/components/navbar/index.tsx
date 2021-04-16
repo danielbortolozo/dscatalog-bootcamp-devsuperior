@@ -19,8 +19,6 @@ const Navbar = () => {
         logout();
     }
 
-
-
     return (
         <nav className="row bg-primary main-nav">
             <div className="col-3">
