@@ -1,49 +1,78 @@
-import { makePrivateRequest } from 'core/utils/request';
+import { makePrivateRequest, makeRequest } from 'core/utils/request';
 import { useForm } from 'react-hook-form';
 import BaseForm from '../../Baseform';
 import { toast } from 'react-toastify';
 import './styles.scss';
-import { useHistory } from 'react-router';
+import { useHistory, useParams } from 'react-router';
+import { useEffect, useState } from 'react';
 
 type FormState = {
     name: string;
     price: string;
-    imageUrl: string;
+    imgUrl: string;
     description: string;
 }
+type ParamsType = {
+    productId: string;
+}
 
-const Form = () => {
-   
+const Form = () => {  
 
-    const { register, handleSubmit, formState: { errors } } = useForm<FormState>();
+    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormState>();
  //   const [hasError, setHasError] = useState(false);
     const history = useHistory();
     // let location = useLocation<LocationState>();
+    const { productId } = useParams<ParamsType>();
+    const isEditing = productId !== 'create';
+    const formTitle = isEditing ? 'Alterar produto' : 'Cadastrar produto'
+
+  //  const [isLoading, setIsLoading] = useState(false);
+    
+    useEffect(() => {
+     //   setIsLoading(true)
+       if (isEditing) {
+        makeRequest({ url: `/products/${productId}` })
+        .then(response => {
+            setValue('name', response.data.name);
+            setValue('price', response.data.price);
+            setValue('description', response.data.description);
+            setValue('imgUrl', response.data.imgUrl);           
+        })
+       }
+       //     .finally(() => setIsLoading(false))
+    }, [productId, isEditing, setValue]);
 
         
     const onSubmit = (data: FormState) =>{
-       console.log(data);
-       makePrivateRequest({ url: '/products', method: 'POST', data })
-         .then(() => {
-             toast.success('Produto cadastrado com sucesso!', {
-                position: "top-center",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                });
+       console.log('Request:'+data);
+       makePrivateRequest({
+          url:  isEditing ? `/products/${productId}` : '/products', 
+          method: isEditing ? 'PUT' : 'POST', 
+          data 
+       }).then(() => {
+            getMessageSuccess();
              history.push('/admin/products');
          }).catch(() => {
              toast.error('Error ao salvar um produto!!!')
          })
         
     }
-  
+
+    const getMessageSuccess = () => {
+        return  toast.success('Produto cadastrado com sucesso!', {
+            position: "top-center",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: true,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined            
+            });
+    }
+
     return (
         <form onSubmit={handleSubmit(onSubmit)}> 
-            <BaseForm title="cadastrar produto">
+            <BaseForm title={formTitle}>
                 <div className="row">
                     <div className="col-6">
                         <div className="margin-botton-30">
@@ -86,20 +115,18 @@ const Form = () => {
 
                         <div className="margin-botton-30">
                             <input 
-                                {...register("imageUrl", { required: "Campo obrigatório"})}
+                                {...register("imgUrl", { required: "Campo obrigatório"})}
                                 type="text" 
-                                className={`form-control input-base ${errors.imageUrl ? 'is-invalid' : ''} `}                              
+                                className={`form-control input-base ${errors.imgUrl ? 'is-invalid' : ''} `}                              
                                 placeholder={"Imagem"}
                             /> 
-                             {errors.imageUrl && (
+                             {errors.imgUrl && (
                                 <div className="invalid-feedback d-block">
-                                    {errors.imageUrl?.message}
+                                    {errors.imgUrl?.message}
                                 </div>
                             )}
                         </div>
-
-                    </div>                     
-
+                    </div>    
 
                     <div className="col-6">
                         <div>

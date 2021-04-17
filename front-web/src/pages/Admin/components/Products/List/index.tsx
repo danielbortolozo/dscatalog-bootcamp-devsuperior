@@ -12,13 +12,14 @@ const List = () => {
   const [activePage, setActivePage] = useState(0);
   const history = useHistory();
 
-
- console.log(productsResponse)
   useEffect(() => {
     const params = {
       page: activePage,
-      linesPerPage: 4
+      linesPerPage: 4,
+      direction: 'DESC',
+      orderBy: 'id'
     }
+    
     setIsLoading(true);
     makeRequest({url: '/products', params})
       
@@ -31,7 +32,7 @@ const List = () => {
   
 
     const handleCreate = () => {
-      console.log('passei aqui...')
+     
       history.push('/admin/products/create');
     }
 
