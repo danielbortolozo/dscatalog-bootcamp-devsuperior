@@ -1,9 +1,12 @@
 import Pagination from 'core/components/Pagination';
 import { ProductsResponse } from 'core/types/Product';
-import { makeRequest } from 'core/utils/request';
-import React, { useEffect, useState } from 'react';
+import { makePrivateRequest, makeRequest } from 'core/utils/request';
+import ProductCardLoader from 'pages/Catalog/components/Loaders/ProductCardLoader';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
+import { toast } from 'react-toastify';
 import Card from '../Card';
+import CardLoader from '../Loaders/ProductCardLoader';
 
 const List = () => {
 
@@ -12,54 +15,88 @@ const List = () => {
   const [activePage, setActivePage] = useState(0);
   const history = useHistory();
 
-  useEffect(() => {
+  
+
+  const getProducts = useCallback(() => {
     const params = {
       page: activePage,
       linesPerPage: 4,
       direction: 'DESC',
       orderBy: 'id'
     }
-    
     setIsLoading(true);
-    makeRequest({url: '/products', params})
-      
+    makeRequest({ url: '/products', params })
+
       .then(response => setProductsResponse(response.data))
       .finally(() => {
-         setIsLoading(false);
+        setIsLoading(false);
       })
   }, [activePage]);
 
-  
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
 
-    const handleCreate = () => {
-     
-      history.push('/admin/products/create');
+
+  const handleCreate = () => {
+
+    history.push('/admin/products/create');
+  }
+  const onRemove = (productId: number) => {
+    const confirm = window.confirm('Deseja realmente excluir este produto?');
+
+    if (confirm) {
+        makePrivateRequest({
+          url: `/products/${productId}`,
+          method: 'DELETE'
+        })
+          .then(() => {
+            getMessageSuccess();
+            history.push('/admin/products');
+            getProducts();
+          }).catch(() => {
+            toast.error('Error ao excluir um produto!!!')
+          })
     }
+  }
+  const getMessageSuccess = () => {
+    return toast.warning('Produto excluido com sucesso!', {
+      position: "top-center",
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: true,
+      draggable: true,
+      progress: undefined
+    });
+  }
 
-    return (
-        <div className="admin-products-list">
-          
-           <button className="btn btn-primary btn-lg" onClick={handleCreate}>
-             Adicionar
-           </button>    
+  return (
+    <div className="admin-products-list">
+
+      <button className="btn btn-primary btn-lg" onClick={handleCreate}>
+        Adicionar
+           </button>
+
+      <div className="admin-list-container">
+      {isLoading ? <CardLoader /> : (
+        productsResponse?.content.map(product => (
+          <Card product={product} key={product.id} onRemove={onRemove} />
+        ))
+      )}
         
-           <div className="admin-list-container">
-              { productsResponse?.content.map(product => (
-                    <Card product={product} key={product.id}/>
-                    ))
-              }
-           </div>
-           { productsResponse && (
-        <Pagination 
-          totalPages={productsResponse.totalPages} 
-          activePage={activePage} 
-          onChange={page => setActivePage(page)} 
+      </div>
+      { productsResponse && (
+        <Pagination
+          totalPages={productsResponse.totalPages}
+          activePage={activePage}
+          onChange={page => setActivePage(page)}
         />
-          
-        )}
-           
-        </div>  
-    );
+
+      )}
+
+    </div>
+  );
 };
 
 
