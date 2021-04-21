@@ -1,31 +1,42 @@
 import { makePrivateRequest, makeRequest } from 'core/utils/request';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import BaseForm from '../../Baseform';
 import { toast } from 'react-toastify';
 import './styles.scss';
 import { useHistory, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
+import { Category } from 'core/types/Product';
+import Select from 'react-select'
 
 type FormState = {
     name: string;
     price: string;
     imgUrl: string;
     description: string;
+    categories: Category[];
 }
 type ParamsType = {
     productId: string;
 }
 
+const options = [
+    { value: '1', label: 'Chocolate'},
+    { value: '2', label: 'Vanilla'}
+]
+
 const Form = () => {
 
-    const { register, handleSubmit, formState: { errors }, setValue } = useForm<FormState>();
+    const { register, handleSubmit, formState: { errors }, setValue, control } = useForm<FormState>();
     //   const [hasError, setHasError] = useState(false);
     const history = useHistory();
     // let location = useLocation<LocationState>();
     const { productId } = useParams<ParamsType>();
+    const [categories, setCategories] = useState<Category[]>([]);
+    const [isLoadingCategories, setIsLoadingCategories] = useState(false);
     const isEditing = productId !== 'create';
     const formTitle = isEditing ? 'Alterar produto' : 'Cadastrar produto'
 
+   
     //  const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
@@ -37,10 +48,24 @@ const Form = () => {
                     setValue('price', response.data.price);
                     setValue('description', response.data.description);
                     setValue('imgUrl', response.data.imgUrl);
+                    setValue('categories', response.data.categories);
                 })
         }
         //     .finally(() => setIsLoading(false))
     }, [productId, isEditing, setValue]);
+
+    useEffect(() => {
+        setIsLoadingCategories(true);
+      makeRequest({ url:'/categories' })
+      .then(response => {
+          console.log('Categories: ',response.data);
+          
+        setCategories(response.data.content)})
+      .finally(() => setIsLoadingCategories(false))
+     
+        
+    }, [setCategories, setIsLoadingCategories]);
+
 
 
     const onSubmit = (data: FormState) => {
@@ -77,17 +102,18 @@ const Form = () => {
                     <div className="col-6">
                         <div className="margin-botton-30">
                             <input
-                                {...register("name", {
-                                    required: "Campo obrigatório",
-                                    minLength: {
-                                        value: 5,
-                                        message: "O campo deve ter no mínimo 5 caracteres."
-                                    },
-                                    maxLength: {
-                                        value: 60,
-                                        message: "O campo deve ter no máximo 60 caracteres."
-                                    }
-                                })}
+                               name="name"
+                               ref={register({
+                                required: "Campo obrigatório",
+                                minLength: {
+                                    value: 5,
+                                    message: "O campo deve ter no mínimo 5 caracteres."
+                                },
+                                maxLength: {
+                                    value: 60,
+                                    message: "O campo deve ter no máximo 60 caracteres."
+                                }
+                            })}
                                 type="text"
                                 className={`form-control input-base ${errors.name ? 'is-invalid' : ''} `}
                                 placeholder={"nome do produto"}
@@ -98,10 +124,32 @@ const Form = () => {
                                 </div>
                             )}
                         </div>
+                        <div className="margin-botton-30">
+                            <Controller
+                               as={Select} 
+                               name="categories"
+                               rules={{ required: true}}
+                               control={control}
+                               isLoading={isLoadingCategories}
+                               classNamePrefix="categories-select"
+                               isMulti    
+                               getOptionLabel={ (option: Category) => option.name }   
+                               getOptionValue={ (option: Category) => String(option.id) }                   
+                               options={categories}
+                               placeholder="Categorias"
+                            />
+                            {errors.categories && (
+                                <div className="invalid-feedback d-block">
+                                    Campo obrigatório
+                                </div>
+                            )}
+
+                        </div>    
 
                         <div className="margin-botton-30">
                             <input
-                                {...register("price", { required: "Campo obrigatório" })}
+                                name="price"
+                                ref={register({ required: "Campo obrigatório" })}
                                 type="text"
                                 className={`form-control input-base ${errors.price ? 'is-invalid' : ''} `}
                                 placeholder={"price"}
@@ -115,7 +163,8 @@ const Form = () => {
 
                         <div className="margin-botton-30">
                             <input
-                                {...register("imgUrl", { required: "Campo obrigatório" })}
+                                name="imgUrl"
+                                ref={register({ required: "Campo obrigatório" })}
                                 type="text"
                                 className={`form-control input-base ${errors.imgUrl ? 'is-invalid' : ''} `}
                                 placeholder={"Imagem"}
@@ -131,7 +180,8 @@ const Form = () => {
                     <div className="col-6">
                         <div>
                             <textarea
-                                {...register("description", { required: "Campo obrigatório" })}
+                                name="description"
+                                ref={register({ required: "Campo obrigatório" })}
                                 className="form-control input-base"
                                 cols={30}
                                 rows={10}

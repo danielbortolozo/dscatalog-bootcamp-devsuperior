@@ -14,8 +14,8 @@ const List = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activePage, setActivePage] = useState(0);
   const history = useHistory();
-
-  
+  const [totalRegistro, setTotalRegistro] = useState(Number);
+  let quantidadeReg: number | undefined;
 
   const getProducts = useCallback(() => {
     const params = {
@@ -27,7 +27,11 @@ const List = () => {
     setIsLoading(true);
     makeRequest({ url: '/products', params })
 
-      .then(response => setProductsResponse(response.data))
+      .then(response => { 
+        setProductsResponse(response.data)
+        
+        console.log('List Pagination Prods -> ', productsResponse );       
+      })
       .finally(() => {
         setIsLoading(false);
       })
@@ -73,11 +77,15 @@ const List = () => {
 
   return (
     <div className="admin-products-list">
-
+     <div className="d-flex flex-row">
       <button className="btn btn-primary btn-lg" onClick={handleCreate}>
         Adicionar
-           </button>
+      </button>
 
+      <div>
+        quantidade registro:{productsResponse?.totalElements}
+      </div>
+      </div>
       <div className="admin-list-container">
       {isLoading ? <CardLoader /> : (
         productsResponse?.content.map(product => (
