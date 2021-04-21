@@ -32,7 +32,7 @@ const Card = ({ product, onRemove }: Props) => {
                  <ProductPrice price={product.price} />
                  <div>
                     {product.categories.map(category => (
-                       <span className="badge badge-pill badge-secondary mr-2"> Categoria1</span>
+                       <span className="badge badge-pill badge-secondary mr-2"> {category.name}</span>
                     ))}
                  </div>
                  
