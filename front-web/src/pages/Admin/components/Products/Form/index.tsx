@@ -6,9 +6,10 @@ import './styles.scss';
 import { useHistory, useParams } from 'react-router';
 import { useEffect, useState } from 'react';
 import { Category } from 'core/types/Product';
-import Select from 'react-select'
+import Select from 'react-select';
+import PriceField from './PriceField';
 
-type FormState = {
+export type FormState = {
     name: string;
     price: string;
     imgUrl: string;
@@ -18,11 +19,6 @@ type FormState = {
 type ParamsType = {
     productId: string;
 }
-
-const options = [
-    { value: '1', label: 'Chocolate'},
-    { value: '2', label: 'Vanilla'}
-]
 
 const Form = () => {
 
@@ -35,7 +31,6 @@ const Form = () => {
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
     const isEditing = productId !== 'create';
     const formTitle = isEditing ? 'Alterar produto' : 'Cadastrar produto'
-
    
     //  const [isLoading, setIsLoading] = useState(false);
 
@@ -62,11 +57,8 @@ const Form = () => {
           
         setCategories(response.data.content)})
       .finally(() => setIsLoadingCategories(false))
-     
         
     }, [setCategories, setIsLoadingCategories]);
-
-
 
     const onSubmit = (data: FormState) => {
         console.log('Request:' + data);
@@ -127,6 +119,7 @@ const Form = () => {
                         <div className="margin-botton-30">
                             <Controller
                                as={Select} 
+                               
                                name="categories"
                                rules={{ required: true}}
                                control={control}
@@ -147,13 +140,7 @@ const Form = () => {
                         </div>    
 
                         <div className="margin-botton-30">
-                            <input
-                                name="price"
-                                ref={register({ required: "Campo obrigatório" })}
-                                type="text"
-                                className={`form-control input-base ${errors.price ? 'is-invalid' : ''} `}
-                                placeholder={"price"}
-                            />
+                            <PriceField control={control} />
                             {errors.price && (
                                 <div className="invalid-feedback d-block">
                                     {errors.price?.message}
