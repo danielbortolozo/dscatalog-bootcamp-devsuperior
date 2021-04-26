@@ -120,12 +120,14 @@ public class ProductService {
 
 
 	public String salvarImageProduct(MultipartFile img) {
-       this.salvarImage(directoryImg, img);
+	   this.salvarImage(directoryImg, img);
        return this.uriImagem;
 	}
 
 	private void salvarImage(String diretorio, MultipartFile image) {
 		Path directoryPath = Paths.get(this.raiz, directoryImg);
+
+		System.out.println("Path:" +directoryPath);
 		Path arquivoPath = directoryPath.resolve(image.getOriginalFilename());
 		try {
 			Files.createDirectories(directoryPath);

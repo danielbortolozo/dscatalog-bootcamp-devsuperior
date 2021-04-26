@@ -54,7 +54,9 @@ public class ProductResource {
 	
 	@PostMapping
 	public ResponseEntity<ProductDTO> insert(@Valid @RequestBody ProductDTO dto) {
+		System.out.println("DTO produto: "+dto.getImgUrl());
 		dto = service.inster(dto);
+
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				  .buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);

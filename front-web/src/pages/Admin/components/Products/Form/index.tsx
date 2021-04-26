@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { Category } from 'core/types/Product';
 import Select from 'react-select';
 import PriceField from './PriceField';
+import ImageUpload from '../ImageUpload';
 
 export type FormState = {
     name: string;
@@ -15,6 +16,7 @@ export type FormState = {
     imgUrl: string;
     description: string;
     categories: Category[];
+    date: Date;
 }
 type ParamsType = {
     productId: string;
@@ -29,8 +31,12 @@ const Form = () => {
     const { productId } = useParams<ParamsType>();
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
+    const [uploadedImgUrl, setUploadedImgUrl] = useState('');
+
+    
     const isEditing = productId !== 'create';
     const formTitle = isEditing ? 'Alterar produto' : 'Cadastrar produto'
+
    
     //  const [isLoading, setIsLoading] = useState(false);
 
@@ -61,18 +67,29 @@ const Form = () => {
     }, [setCategories, setIsLoadingCategories]);
 
     const onSubmit = (data: FormState) => {
-        console.log('Request:' + data);
+        
+        const payload = {
+            ...data,
+            imgUrl: uploadedImgUrl,
+            date: new Date()
+        }
+       
         makePrivateRequest({
             url: isEditing ? `/products/${productId}` : '/products',
             method: isEditing ? 'PUT' : 'POST',
-            data
+            data: payload
         }).then(() => {
             getMessageSuccess();
             history.push('/admin/products');
         }).catch(() => {
             toast.error('Error ao salvar um produto!!!')
-        })
+        });
+    }
 
+    const onUploadSuccess = (imgUrl: string) => {
+        console.log('onUploadSuccess', imgUrl);
+        
+       setUploadedImgUrl(imgUrl);
     }
 
     const getMessageSuccess = () => {
@@ -149,18 +166,7 @@ const Form = () => {
                         </div>
 
                         <div className="margin-botton-30">
-                            <input
-                                name="imgUrl"
-                                ref={register({ required: "Campo obrigatório" })}
-                                type="text"
-                                className={`form-control input-base ${errors.imgUrl ? 'is-invalid' : ''} `}
-                                placeholder={"Imagem"}
-                            />
-                            {errors.imgUrl && (
-                                <div className="invalid-feedback d-block">
-                                    {errors.imgUrl?.message}
-                                </div>
-                            )}
+                          <ImageUpload onUploadSuccess={onUploadSuccess} />
                         </div>
                     </div>
 
