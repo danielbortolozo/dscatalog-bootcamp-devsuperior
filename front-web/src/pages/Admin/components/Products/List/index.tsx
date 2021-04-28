@@ -1,8 +1,7 @@
 import Pagination from 'core/components/Pagination';
 import { ProductsResponse } from 'core/types/Product';
 import { makePrivateRequest, makeRequest } from 'core/utils/request';
-import ProductCardLoader from 'pages/Catalog/components/Loaders/ProductCardLoader';
-import React, { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Card from '../Card';
@@ -14,8 +13,8 @@ const List = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [activePage, setActivePage] = useState(0);
   const history = useHistory();
-  const [totalRegistro, setTotalRegistro] = useState(Number);
-  let quantidadeReg: number | undefined;
+ 
+ 
 
   const getProducts = useCallback(() => {
     const params = {
@@ -28,9 +27,7 @@ const List = () => {
     makeRequest({ url: '/products', params })
 
       .then(response => { 
-        setProductsResponse(response.data)
-        
-        console.log('List Pagination Prods -> ', productsResponse );       
+        setProductsResponse(response.data)          
       })
       .finally(() => {
         setIsLoading(false);

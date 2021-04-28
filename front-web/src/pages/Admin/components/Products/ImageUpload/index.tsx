@@ -6,14 +6,15 @@ import { toast } from 'react-toastify';
 
 type Props = {
    onUploadSuccess: (imgUrl: string) => void;
+   productImgUrl: string;
 }
 
 
-const ImageUpload = ({onUploadSuccess}: Props ) => {
+const ImageUpload = ({onUploadSuccess, productImgUrl}: Props ) => {
 
    const [uploadProgress, setUploadProgress] = useState(0);
    const [uploadedImgUrl, setUploadedImgUrl] = useState('');
-
+   const imgUrl = uploadedImgUrl || productImgUrl;
 
    const onUploadProgress = (progressEvent: ProgressEvent) => {
       const progress = Math.round((progressEvent.loaded) * 100 / progressEvent.total);
@@ -59,7 +60,7 @@ const ImageUpload = ({onUploadSuccess}: Props ) => {
                <input
                   type="file"
                   id="upload"
-                  accept="image/png, image/jpg"
+                  accept="image/png, image/jpg, image/jpeg"
                   onChange={handleChange}
                   hidden
                />
@@ -81,12 +82,12 @@ const ImageUpload = ({onUploadSuccess}: Props ) => {
                   </div>
                </>
             )}
-            {(uploadedImgUrl && uploadProgress === 0) && (
-              console.log(`Path: ${uploadedImgUrl}`),
+            {(imgUrl && uploadProgress === 0) && (
+              console.log(`Path: ${imgUrl}`),
               
               <img              
-               src={uploadedImgUrl} 
-               alt={uploadedImgUrl} 
+               src={imgUrl} 
+               alt={imgUrl} 
                className="uploaded-image"
              />
             )
