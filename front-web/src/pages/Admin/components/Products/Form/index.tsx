@@ -52,15 +52,13 @@ const Form = () => {
                     setValue('description', response.data.description);                   
                     setValue('categories', response.data.categories);
                    
-                    setProductImgUrl(response.data.imgUrl);   
-                    
-                    
+                    setProductImgUrl(response.data.imgUrl);                     
                 })
         }
         
     
         //     .finally(() => setIsLoading(false))
-    }, [productId, isEditing, setValue]);
+    }, [productId, isEditing, setValue, setProductImgUrl]);
 
     useEffect(() => {
         setIsLoadingCategories(true);
