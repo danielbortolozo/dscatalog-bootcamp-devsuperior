@@ -29,6 +29,7 @@ const Form = () => {
     const history = useHistory();
     // let location = useLocation<LocationState>();
     const { productId } = useParams<ParamsType>();
+
     const [categories, setCategories] = useState<Category[]>([]);
     const [isLoadingCategories, setIsLoadingCategories] = useState(false);
     const [uploadedImgUrl, setUploadedImgUrl] = useState('');
@@ -50,10 +51,14 @@ const Form = () => {
                     setValue('price', response.data.price);
                     setValue('description', response.data.description);                   
                     setValue('categories', response.data.categories);
-
-                    setProductImgUrl(response.data.imgUrl);
+                   
+                    setProductImgUrl(response.data.imgUrl);   
+                    
+                    
                 })
         }
+        
+    
         //     .finally(() => setIsLoading(false))
     }, [productId, isEditing, setValue]);
 
@@ -61,8 +66,7 @@ const Form = () => {
         setIsLoadingCategories(true);
       makeRequest({ url:'/categories' })
       .then(response => {
-          console.log('Categories: ',response.data);
-          
+                    
         setCategories(response.data.content)})
       .finally(() => setIsLoadingCategories(false))
         
@@ -72,7 +76,7 @@ const Form = () => {
         
         const payload = {
             ...data,
-            imgUrl: uploadedImgUrl,
+            imgUrl: uploadedImgUrl || productImgUrl,
             date: new Date()
         }
        
@@ -107,6 +111,7 @@ const Form = () => {
     }
 
     return (
+                
         <form onSubmit={handleSubmit(onSubmit)}>
             <BaseForm title={formTitle}>
                 <div className="row">
@@ -149,6 +154,7 @@ const Form = () => {
                                getOptionValue={ (option: Category) => String(option.id) }                   
                                options={categories}
                                placeholder="Categorias"
+                               defaultValue=""
                             />
                             {errors.categories && (
                                 <div className="invalid-feedback d-block">
@@ -166,7 +172,7 @@ const Form = () => {
                                 </div>
                             )}
                         </div>
-
+                        
                         <div className="margin-botton-30">
                           <ImageUpload 
                              onUploadSuccess={onUploadSuccess} 

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import './styles.scss';
 import ProductCard from './components/ProductCard';
 import ProductCardLoader from './components/Loaders/ProductCardLoader';
@@ -6,31 +6,43 @@ import { makeRequest } from 'core/utils/request';
 import { ProductsResponse } from 'core/types/Product';
 import { Link } from 'react-router-dom';
 import Pagination from 'core/components/Pagination';
-
+import ProductFilters, { FilterForm }from 'core/components/ProductFilters';
 const Catalog = () => {
  // quando o componente iniciar, buscar a lista de produtos.
  // 
  const [productsResponse, setProductsResponse] = useState<ProductsResponse>();
  const [isLoading, setIsLoading] = useState(false);
  const [activePage, setActivePage] = useState(0);
- useEffect(() => {
-   const params = {
-     page: activePage,
-     linesPerPage: 12
-   }
-   setIsLoading(true);
-   makeRequest({url: '/products', params})
-     
-     .then(response => setProductsResponse(response.data))
-     .finally(() => {
-        setIsLoading(false);
-     })
+
+ const getProducts = useCallback((filter?: FilterForm) => {
+  const params = {
+    page: activePage,
+    linesPerPage: 12,
+    name: filter?.name,
+    categoryId: filter?.categoryId
+  }
+  setIsLoading(true);
+  makeRequest({url: '/products', params})
+    
+    .then(response => setProductsResponse(response.data))
+    .finally(() => {
+       setIsLoading(false);
+    })
  }, [activePage]);
+
+ useEffect(() => {
+   getProducts();
+ }, [getProducts]);
    return (
     <div className="catalog-container">
-      <h1 className="catalog-title">
-        Catálago de produtos
-      </h1>
+
+      <div className="d-flex justify-content-between">
+          <h1 className="catalog-title">
+            Catálago de produtos       
+          </h1>
+          <ProductFilters onSearch={ filter => getProducts(filter) } />
+      </div>
+      
       <div className="catalog-products">
         {isLoading ? <ProductCardLoader /> : (
           productsResponse?.content.map(product => (
