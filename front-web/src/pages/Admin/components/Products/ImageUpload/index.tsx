@@ -14,7 +14,7 @@ const ImageUpload = ({onUploadSuccess, productImgUrl}: Props ) => {
 
    const [uploadProgress, setUploadProgress] = useState(0);
    const [uploadedImgUrl, setUploadedImgUrl] = useState('');
-   const imgUrl = uploadedImgUrl;
+   const imgUrl = uploadedImgUrl || productImgUrl;
 
    const onUploadProgress = (progressEvent: ProgressEvent) => {
       const progress = Math.round((progressEvent.loaded) * 100 / progressEvent.total);

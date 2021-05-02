@@ -74,15 +74,15 @@ const List = () => {
 
   return (
     <div className="admin-products-list">
-     <div className="d-flex flex-row">
-      <button className="btn btn-primary btn-lg" onClick={handleCreate}>
-        Adicionar
-      </button>
+     <div className="d-flex flex-row col-12">
+        <button className="btn btn-primary btn-lg" onClick={handleCreate}>
+          Adicionar
+        </button>     
+        <label  className="total-registro">
+          <h5> Total registro: {productsResponse?.totalElements} </h5>
+        </label>    
+      </div>
 
-      <div>
-        quantidade registro:{productsResponse?.totalElements}
-      </div>
-      </div>
       <div className="admin-list-container">
       {isLoading ? <CardLoader /> : (
         productsResponse?.content.map(product => (
