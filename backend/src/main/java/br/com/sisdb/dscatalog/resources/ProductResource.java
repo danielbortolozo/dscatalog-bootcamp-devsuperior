@@ -61,6 +61,7 @@ public class ProductResource {
 				  .buildAndExpand(dto.getId()).toUri();
 		return ResponseEntity.created(uri).body(dto);
 	}
+
 	@PostMapping(value = "/image")
 	public ResponseEntity<UriDTO> uploadImage(@RequestParam(value = "file") MultipartFile file) {
 
@@ -69,18 +70,15 @@ public class ProductResource {
         uriDto.setUri(uriImg);
 		return ResponseEntity.ok(uriDto);
 	}
-	
-	
+
 	@PutMapping(value = "/{id}")
 	public ResponseEntity<ProductDTO> update(@PathVariable Long id, @Valid @RequestBody ProductDTO dto) {
-		
 		dto = service.update(id, dto);
 		return ResponseEntity.ok(dto);
 	}
 	
 	@DeleteMapping(value = "/{id}")
 	public ResponseEntity<ProductDTO> delete(@PathVariable Long id) {
-		
 		service.delete(id);
 		return ResponseEntity.noContent().build();
 	}
